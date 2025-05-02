@@ -90,20 +90,49 @@ class ReproductorGUI:
         BS_cargar.add_command(label="Cargar canción",command=self.cargar_cancion)
         BS_cargar.add_cascade(label="Archivo", menu=BS_cargar)
 
+        control_menu = tk.Menu(barrasuperior, tearoff=0)
+        control_menu.add_command(label="Eliminar canción actual", command=self.eliminar)
+        barrasuperior.add_cascade(label="Control", menu=control_menu)
+
         self.lista_box = tk.Listbox(root, width=50)
-        self.lista_box.pack(pady=10)
+        self.lista_box.pack(pady=20)
 
-        self.btn_cargar = tk.Button(root, text="Cargar canción", command=self.cargar_cancion)
-        self.btn_cargar.pack()
+        self.tiempo_label = tk.Label(root, text="00:00 / 00:00")
+        self.tiempo_label.pack()
 
-        self.controles_frame = tk.Frame(root)
-        self.controles_frame.pack(pady=10)
+        self.progreso = tk.Scale(root, from_=0, to=100, orient=tk.HORIZONTAL, length=400, showvalue=0, state="disabled")
+        self.progreso.pack()
 
         tk.Button(self.controles_frame, text="⏮ Anterior", command=self.anterior).grid(row=0, column=0, padx=5)
         tk.Button(self.controles_frame, text="▶ Reproducir", command=self.reproducir).grid(row=0, column=1, padx=5)
         tk.Button(self.controles_frame, text="⏸ Pausar", command=self.pausar).grid(row=0, column=2, padx=5)
         tk.Button(self.controles_frame, text="⏹ Detener", command=self.detener).grid(row=0, column=3, padx=5)
         tk.Button(self.controles_frame, text="⏭ Siguiente", command=self.siguiente).grid(row=0, column=4, padx=5)
+
+    def actualizar_tiempo(self):
+        if pygame.mixer.music.get_busy():
+            tiempoms=pygame.mixer.music.get_pos()
+            tiemposeg=tiempoms//1000
+            minutos=tiemposeg//60
+            segundos=tiemposeg % 60
+
+            duracionTotal=self.lista.actual.duracion
+            minTotales=duracionTotal//60
+            segTotales=duracionTotal%60
+
+            self.tiempo_label.config(text=f"{minutos:02}:{segundos:02} / {minTotales:02}:{segTotales:02}")
+            
+            self.progreso.config(to=duracionTotal)
+            self.progreso.config(state="normal")
+            self.progreso.set(tiemposeg)
+            self.progreso.config(state="disabled")
+            
+            self.root.after(1000, self.actualizar_tiempo)
+        else:
+            self.tiempo_label.config(text="00:00 / 00:00")
+            self.progreso.config(state="normal")
+            self.progreso.set(0)
+            self.progreso.config(state="disabled")
 
     def cargar_cancion(self):
         archivo = filedialog.askopenfilename(filetypes=[("Archivos de audio", "*.mp3 *.wav *.mpeg" )])
