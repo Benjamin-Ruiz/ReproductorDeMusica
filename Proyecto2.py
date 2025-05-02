@@ -94,6 +94,10 @@ class ReproductorGUI:
         control_menu.add_command(label="Eliminar canción actual", command=self.eliminar)
         barrasuperior.add_cascade(label="Eliminar canción actual", menu=control_menu)
 
+        self.titulo_label = tk.Label(root, text="T    R   O   N   O   S ", font=("Helvetica", 32, "bold"))
+        self.titulo_label.pack(pady=10)
+
+
         self.lista_box = tk.Listbox(root, width=50)
         self.lista_box.pack(pady=20)
 
