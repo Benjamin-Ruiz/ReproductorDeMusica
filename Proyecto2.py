@@ -24,23 +24,6 @@ class Listas():
     def __init__(self):
         self.actual=None
 
-    def CrearListadeReproduccion(self,nombre):
-        nuevo_nodo = NodoListas(nombre)
-        if not self.primero:
-            self.primero = nuevo_nodo
-            self.primero.siguiente = self.primero
-            self.primero.anterior = self.primero
-        else:
-            ultimo = self.primero.anterior
-            nuevo_nodo.siguiente = self.primero
-            nuevo_nodo.anterior = ultimo
-            ultimo.siguiente = nuevo_nodo
-            self.primero.anterior = nuevo_nodo
-        self.actual = nuevo_nodo
-
-
-
-# Métodos 
 class ListaReproduccion:
     def __init__(self):
         self.actual = None
@@ -93,12 +76,20 @@ class ListaReproduccion:
 class ReproductorGUI:
     def __init__(self, root):
         self.root = root
-        self.root.title("🎵 Reproductor de Música Simple")
+        self.root.title(" T   R   O   N   O   S")
         self.root.geometry("500x400")
         self.lista = ListaReproduccion()
         pygame.mixer.init()
 
-        # Botones y +
+        # Botones
+
+        barrasuperior=tk.Menu(self.root)
+        self.root.config(menu=barrasuperior)
+
+        BS_cargar=tk.Menu(barrasuperior,tearoff=0)
+        BS_cargar.add_command(label="Cargar canción",command=self.cargar_cancion)
+        BS_cargar.add_cascade(label="Archivo", menu=BS_cargar)
+
         self.lista_box = tk.Listbox(root, width=50)
         self.lista_box.pack(pady=10)
 
@@ -113,9 +104,6 @@ class ReproductorGUI:
         tk.Button(self.controles_frame, text="⏸ Pausar", command=self.pausar).grid(row=0, column=2, padx=5)
         tk.Button(self.controles_frame, text="⏹ Detener", command=self.detener).grid(row=0, column=3, padx=5)
         tk.Button(self.controles_frame, text="⏭ Siguiente", command=self.siguiente).grid(row=0, column=4, padx=5)
-
-        self.btn_eliminar = tk.Button(root, text="Eliminar canción actual", command=self.eliminar)
-        self.btn_eliminar.pack(pady=5)
 
     def cargar_cancion(self):
         archivo = filedialog.askopenfilename(filetypes=[("Archivos de audio", "*.mp3 *.wav *.mpeg" )])
