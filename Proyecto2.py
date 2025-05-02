@@ -88,11 +88,11 @@ class ReproductorGUI:
 
         BS_cargar=tk.Menu(barrasuperior,tearoff=0)
         BS_cargar.add_command(label="Cargar canción",command=self.cargar_cancion)
-        BS_cargar.add_cascade(label="Archivo", menu=BS_cargar)
+        barrasuperior.add_cascade(label="Cargar canción", menu=BS_cargar)
 
         control_menu = tk.Menu(barrasuperior, tearoff=0)
         control_menu.add_command(label="Eliminar canción actual", command=self.eliminar)
-        barrasuperior.add_cascade(label="Control", menu=control_menu)
+        barrasuperior.add_cascade(label="Eliminar canción actual", menu=control_menu)
 
         self.lista_box = tk.Listbox(root, width=50)
         self.lista_box.pack(pady=20)
@@ -102,6 +102,9 @@ class ReproductorGUI:
 
         self.progreso = tk.Scale(root, from_=0, to=100, orient=tk.HORIZONTAL, length=400, showvalue=0, state="disabled")
         self.progreso.pack()
+
+        self.controles_frame = tk.Frame(root)
+        self.controles_frame.pack(side=tk.BOTTOM, pady=15)
 
         tk.Button(self.controles_frame, text="⏮ Anterior", command=self.anterior).grid(row=0, column=0, padx=5)
         tk.Button(self.controles_frame, text="▶ Reproducir", command=self.reproducir).grid(row=0, column=1, padx=5)
@@ -155,6 +158,7 @@ class ReproductorGUI:
             pygame.mixer.music.load(self.lista.actual.ruta_audio)
             pygame.mixer.music.play()
             self.root.title(f"🎵 Reproduciendo: {self.lista.actual.nombre}")
+            self.actualizar_tiempo()
 
     def pausar(self):
         pygame.mixer.music.pause()
